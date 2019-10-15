@@ -1,0 +1,21 @@
+#xxx{
+    background: green;
+    display: bloak;
+}
+body{
+    margin: 0;
+}
+.actions{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+.actions > #brush{
+    display: none;
+}
+.actions.x > #brush{    /**class为actions的标签在actions x状态下id为brush的标签显示inline-block样式**/
+    display: inline-block;
+}
+.actions.x > #eraser{    /**class为actions的标签在actions状态下id为eraser的标签不显示**/
+    display: none;
+}
