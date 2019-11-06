@@ -1,21 +1,119 @@
+ul,ol{list-style: none;}
+*{margin: 0; padding: 0}
+.icon {
+    width: 1em; height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
 #xxx{
-    background: green;
     display: bloak;
+    background: white;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 body{
-    margin: 0;
+    overflow: hidden;
+    /* 禁用滚动条 */
+
 }
 .actions{
     position: fixed;
     left: 0;
-    bottom: 0;
+    top: 0;
+    padding: 20px;
+    /* 让工具与边界空出距离，让工具可以变大不受遮挡 */
 }
-.actions > #brush{
-    display: none;
+.actions .icon{
+    height: 1.5em;
+    width: 1.5em;
+    transition: all 0.3s;
+    /* 动画过程在0.3s内显示完成 */
+    margin: 0 10px;
+    /* 给笔和橡皮擦直接一个空隙 */
 }
-.actions.x > #brush{    /**class为actions的标签在actions x状态下id为brush的标签显示inline-block样式**/
-    display: inline-block;
+.actions > svg.active{
+    /* 当svg处于active状态时变成下面样式 */
+    color: red;
+    transform: scale(1.2);
+    /* 变为原来大小的1.2倍 */
 }
-.actions.x > #eraser{    /**class为actions的标签在actions状态下id为eraser的标签不显示**/
-    display: none;
+.colors{
+    position: fixed;
+    top: 60px;
+    left: 20px;
+}
+.colors > li{
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    margin: 15px 0;
+    border: 1px solid #888;
+    box-shadow: 0 -1px 1px 1px #ccc;
+    transition: all 0.3s;
+}
+.colors .red{
+    background: red;
+    
+}
+.colors .green{
+    background: green;
+}
+.colors .blue{
+    background: blue;
+}
+.colors .black{
+    background: black;
+}
+.colors .yellow{
+    background: yellow;
+}
+.colors .white{
+    background: white;
+}
+.colors > li.active{
+    border: 2px solid #888;
+    transform: scale(1.2);
+}
+.size{
+    position: fixed;
+    top: 60px;
+    right: 20px;
+}
+.size > li{
+    border-radius: 50px;
+}
+.size > li.active{
+    background: red;
+}
+.size .thin{
+    height: 7px;
+    width: 7px;
+    border: 2px solid black;
+    margin: 20px 0 20px 8px;
+}
+.size .thinner{
+    height: 7px;
+    width: 7px;
+    border: 4px solid black;
+    margin: 20px 0 20px 6px;
+}
+.size .middle{
+    height: 7px;
+    width: 7px;
+    border: 6px solid black;
+    margin: 20px 0 20px 4px;
+}
+.size .thick{
+    height: 7px;
+    width: 7px;
+    border: 8px solid black;
+    margin: 20px 0 20px 2px;
+}
+.size .mostthick{
+    height: 7px;
+    width: 7px;
+    border: 10px solid black;
+    margin: 20px 0 20px 0;
 }

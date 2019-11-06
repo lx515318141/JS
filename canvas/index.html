@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Huns">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 可以让页面在手机端打开后不进行缩放的标签 -->
 
 <head>
     <meta charset="UTF-8">
@@ -10,10 +12,36 @@
 <body>
     <canvas id="xxx" height=300 width=300></canvas>
     <div id="actions" class="actions">
-        <button id=eraser>橡皮擦</button>
-        <button id=brush>画笔</button>
+        <svg id="pen" class="active icon">
+            <use xlink:href="#icon-pen"></use>
+        </svg>
+        <svg id="eraser" class="icon">
+            <use xlink:href="#icon-Eraser-Tool"></use>
+        </svg>
+        <svg id="clear" class="icon">
+            <use xlink:href="#icon-clear"></use>
+        </svg>
+        <svg id="download" class="icon">
+            <use xlink:href="#icon-download"></use>
+        </svg>
     </div>
+    <ol class="colors">
+        <li id="black" class="active black"></li>
+        <li id="white" class="white"></li>
+        <li id="red" class="red"></li>
+        <li id="green" class="green"></li>
+        <li id="blue" class="blue"></li>
+        <li id="yellow" class="yellow"></li>
+    </ol>
+    <ol class="size">
+        <li id="thin" class="active thin"></li>
+        <li id="thinner" class="thinner"></li>
+        <li id="middle" class="middle"></li>
+        <li id="thick" class="thick"></li>
+        <li id="mostthick" class="mostthick"></li>
+    </ol>
     <script src="./main.js"></script>
+    <script src="//at.alicdn.com/t/font_1461021_i9mf3d8qlen.js"></script>
 </body>
 
 </html>
