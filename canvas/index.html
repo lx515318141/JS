@@ -10,14 +10,16 @@
 </head>
 
 <body>
-    <canvas id="xxx" height=300 width=300></canvas>
+    <canvas id="canvas" height=300 width=300></canvas>
     <div id="actions" class="actions">
-        <svg id="pen" class="active icon">
-            <use xlink:href="#icon-pen"></use>
-        </svg>
-        <svg id="eraser" class="icon">
-            <use xlink:href="#icon-Eraser-Tool"></use>
-        </svg>
+        <div class="penAndEraser">
+            <svg id="pen" class="active icon">
+                <use xlink:href="#icon-pen"></use>
+            </svg>
+            <svg id="eraser" class="icon">
+                <use xlink:href="#icon-Eraser-Tool"></use>
+            </svg>
+        </div>
         <svg id="clear" class="icon">
             <use xlink:href="#icon-clear"></use>
         </svg>
@@ -34,14 +36,19 @@
         <li id="yellow" class="yellow"></li>
     </ol>
     <ol class="size">
-        <li id="thin" class="active thin"></li>
-        <li id="thinner" class="thinner"></li>
-        <li id="middle" class="middle"></li>
+
+        <li id="finest" class="active finest"></li>
+        <li id="finer" class="finer"></li>
+        <li id="fine" class="fine"></li>
         <li id="thick" class="thick"></li>
+        <li id="morethick" class="morethick"></li>
         <li id="mostthick" class="mostthick"></li>
     </ol>
-    <script src="./main.js"></script>
+    
     <script src="//at.alicdn.com/t/font_1461021_i9mf3d8qlen.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./main.js"></script>
+    <!-- <script src="./a.js"></script> -->
 </body>
 
 </html>

@@ -1,225 +1,214 @@
-var yyy = document.getElementById('xxx');
-var context = yyy.getContext('2d');
-var lineWidth = 1;
+{
+  let view = {
+    el: "html",
+    init() {
+      this.$el = $(this.el);
+    },
+    activeItem(li) {
+      $li = $(li);
+      $li.addClass("active").siblings(".active").removeClass("active");
+    },
+  };
+  let model = {
+    data: {
+      lineSize: {
+        finest: 1,
+        finer: 2,
+        fine: 4,
+        thick: 6,
+        morethick: 8,
+        mostthick: 10,
+      },
+    },
+  };
+  let controller = {
 
-//设置画板宽高
-autoSetCanvasSize(yyy);
-
-//监听用户
-listenToUser(yyy);
-
-//设置橡皮擦和画笔按钮切换
-var eraserEnabled = false;    // 声明一个叫eraserEnabled且为假的变量
-eraser.onclick = function () {    //当橡皮擦按钮被点击时eraserEnabled变为真，class为eraser变为active状态，pen被移除active状态
-    eraserEnabled = true;
-    eraser.classList.add('active');
-    pen.classList.remove('active');
-}
-pen.onclick = function () {    //当画笔按钮被点击时eraserEnabled变为假，class为pen变为active状态，eraser被移除active状态
-    eraserEnabled = false;
-    pen.classList.add('active');
-    eraser.classList.remove('active');
-}
-
-red.onclick = function(){
-    context.strokeStyle = 'red';
-    red.classList.add('active')
-    green.classList.remove('active')
-    blue.classList.remove('active')
-    yellow.classList.remove('active')
-    black.classList.remove('active')
-    white.classList.remove('active')
-}
-green.onclick = function(){
-    context.strokeStyle = 'green';
-    green.classList.add('active')
-    red.classList.remove('active')
-    blue.classList.remove('active')
-    yellow.classList.remove('active')
-    black.classList.remove('active')
-    white.classList.remove('active')
-}
-blue.onclick = function(){
-    context.strokeStyle = 'blue';
-    blue.classList.add('active')
-    green.classList.remove('active')
-    red.classList.remove('active')
-    yellow.classList.remove('active')
-    black.classList.remove('active')
-    white.classList.remove('active')
-}
-yellow.onclick = function(){
-    context.strokeStyle = 'yellow';
-    blue.classList.remove('active')
-    green.classList.remove('active')
-    red.classList.remove('active')
-    yellow.classList.add('active')
-    black.classList.remove('active')
-    white.classList.remove('active')
-}
-black.onclick = function(){
-    context.strokeStyle = 'black';
-    blue.classList.remove('active')
-    green.classList.remove('active')
-    red.classList.remove('active')
-    yellow.classList.remove('active')
-    black.classList.add('active')
-    white.classList.remove('active')
-}
-white.onclick = function(){
-    context.strokeStyle = 'white';
-    blue.classList.remove('active')
-    green.classList.remove('active')
-    red.classList.remove('active')
-    yellow.classList.remove('active')
-    black.classList.remove('active')
-    white.classList.add('active')
-}
-
-thin.onclick = function(){
-    lineWidth = 2;
-    thin.classList.add('active')
-    thinner.classList.remove('active')
-    middle.classList.remove('active')
-    thick.classList.remove('active')
-    mostthick.classList.remove('active')
-}
-thinner.onclick = function(){
-    lineWidth = 4;
-    thin.classList.remove('active')
-    thinner.classList.add('active')
-    middle.classList.remove('active')
-    thick.classList.remove('active')
-    mostthick.classList.remove('active')
-}
-
-middle.onclick = function(){
-    lineWidth = 6;
-    thin.classList.remove('active')
-    thinner.classList.remove('active')
-    middle.classList.add('active')
-    thick.classList.remove('active')
-    mostthick.classList.remove('active')
-}
-thick.onclick = function(){
-    lineWidth = 8;
-    thin.classList.remove('active')
-    thinner.classList.remove('active')
-    middle.classList.remove('active')
-    thick.classList.add('active')
-    mostthick.classList.remove('active')
-}
-mostthick.onclick = function(){
-    lineWidth = 10;
-    thin.classList.remove('active')
-    thinner.classList.remove('active')
-    middle.classList.remove('active')
-    thick.classList.remove('active')
-    mostthick.classList.add('active')
-}
-
-clear.onclick = function(){
-    context.clearRect(0, 0, yyy.width, yyy.height)
-}
-
-download.onclick = function(){
-    var url = yyy.toDataURL("image/png");
-    var a = document.createElement('a');
-    document.body.appendChild(a);
-    a.href = url;
-    a.download = '我的画'
-    a.target = '_blank'
-    a.click();
-}
-/****工具函数*****/
-function autoSetCanvasSize(canvas) {
-    setCanvasSize();
-
-    window.onresize = function () {
-        setCanvasSize();
-        // 监听用户是否调整了窗口大小，如果调整了，重新让画板宽高等于窗口宽高
-    }
-
-    function setCanvasSize() {
-        var pageWidth = document.documentElement.clientWidth;
-        var pageHeight = document.documentElement.clientHeight;
-        canvas.width = pageWidth;
-        canvas.height = pageHeight;
-        // 让画板宽高等于窗口宽高
-    }
-}
-
-function listenToUser(canvas) {
-    var using = false;
-    var lastPoint = { x: undefined, y: undefined };
-    // 声明一个叫上一点的hash
-
-    //特性检查
-    if (document.body.ontouchstart !== undefined) {     //触屏设备
-        canvas.ontouchstart = function (aaa) {
-            var x = aaa.touches[0].clientX;   // 让xy等于鼠标在画板中的xy
-            var y = aaa.touches[0].clientY;
-            using = true;
-            if (eraserEnabled) {   // 如果eraserEnabled为真，即橡皮擦按钮被点击过，则执行以下循环
-                context.clearRect(x - 5, y - 5, 10, 10); // 清除鼠标指针10单位的矩形区域
-            } else {
-                lastPoint = { "x": x, "y": y };   // 将触摸点的xy赋予上一点的xy里面
-            }
+    context: undefined,
+    canvas: undefined,
+    lineWidth: 1,
+    begin: false,
+    using: false,
+    lastPoint: { x: undefined, y: undefined },
+    newPoint: { x: undefined, y: undefined },
+    penOrEraser: pen,
+    status: undefined,
+    device: undefined,
+    init(view, model) {
+      this.view = view;
+      this.view.init();
+      this.model = model;
+      // 最初我使用的是下面的原生js的方法获取canvas，但是后来想试试通过使用jquery来实现，于是改为了现在用的这种方法。
+      this.canvas = document.getElementById("canvas");
+      this.context = this.canvas.getContext("2d");
+      // 但是因为getContext是dom方法，无法用jquery对象直接调用，经过查找博客等，找到解决办法
+      // 只需要将 canvas.getContext("2d") 改为 canvas[0].getContext('2d') 就可以了
+      //   this.canvas = this.view.$el.find("#canvas");
+      //   this.context = this.canvas[0].getContext('2d');
+      this.setCanvasSize();
+      // this.listenToUser(this.canvas);
+      this.bindEvents();
+    },
+    bindEvents() {
+      $(window).on("resize", () => {
+        this.setCanvasSize();
+      });
+      this.view.$el.find(".penAndEraser").on("click", "svg", (e) => {
+        this.penOrEraser = e.currentTarget.id;
+      });
+      this.view.$el.find("canvas").on("mousedown", (e) => {
+        // 将状态改为开始
+        this.status = 'begin';
+        // 设备改为电脑
+        this.device = 'computer';
+        let x = e.clientX;
+        let y = e.clientY;
+        this.using = true;
+        // 如果eraserEnabled为eraser，即橡皮擦按钮被点击过，则执行以下循环
+        if (this.eraserEnabled === "eraser") {
+          // 清除鼠标指针10单位的矩形区域
+          this.context.clearRect(x - 5, y - 5, 10, 10);
+        } else {
+          // 将鼠标指针的xy赋予上一点的xy里面
+          this.lastPoint["x"] = x;
+          this.lastPoint["y"] = y;
         }
-
-        canvas.ontouchmove = function (aaa) {
-            var x = aaa.touches[0].clientX;
-            var y = aaa.touches[0].clientY;
-            if (!using) { return; }
-            if (eraserEnabled) {
-                context.clearRect(x - 5, y - 5, 10, 10);
-            } else {
-                var newPoint = { "x": x, "y": y };    // 声明一个叫新点的hash
-                drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);    // 从上一点到新点画线
-                lastPoint = newPoint;   // 让将新点赋值给上一点
-            }
+      });
+      this.view.$el.find("canvas").on("mousemove", (e) => {
+        // 将状态改为过程
+        this.status = "process"
+        let x = e.clientX;
+        let y = e.clientY;
+        if (!this.using) {
+          return;
         }
-
-        canvas.ontouchend = function (aaa) {
-            using = false;
+        if (this.eraserEnabled === "eraser") {
+          this.context.clearRect(x - 5, y - 5, 10, 10);
+        } else {
+          // 从上一点到新点画线
+          this.newPoint["x"] = x;
+          this.newPoint["y"] = y;
+          this.drawLine(
+            this.lastPoint.x,
+            this.lastPoint.y,
+            this.newPoint.x,
+            this.newPoint.y
+          );
+          // 让将新点赋值给上一点
+          Object.assign(this.lastPoint, this.newPoint);
         }
-    } else {                                     //非触屏设备
-        canvas.onmousedown = function (aaa) {  // 当鼠标被按下时执行下面
-            var x = aaa.clientX;   // 让xy等于鼠标在画板中的xy
-            var y = aaa.clientY;
-            using = true;
-            if (eraserEnabled) {   // 如果eraserEnabled为真，即橡皮擦按钮被点击过，则执行以下循环
-                context.clearRect(x - 5, y - 5, 10, 10); // 清除鼠标指针10单位的矩形区域
-            } else {
-                lastPoint = { "x": x, "y": y };   // 将鼠标指针的xy赋予上一点的xy里面
+      });
+      this.view.$el.find("canvas").on("mouseup", (e) => {
+        // 当鼠标松开时using为假
+        this.using = false;
+        this.begin = false;
+      });
+      this.view.$el.find("ol").on("click", "li", (e) => {
+        console.log(e.currentTarget);
+        this.view.activeItem(e.currentTarget);
+        let className = e.currentTarget.parentElement.getAttribute("class");
+        if (className === "colors") {
+          let color = e.currentTarget.id;
+          this.context.strokeStyle = color;
+        } else {
+          let size = e.currentTarget.id;
+          for (let key in this.model.data.lineSize) {
+            if (size === key) {
+              this.lineWidth = this.model.data.lineSize[key];
             }
-        };
-
-        canvas.onmousemove = function (aaa) {  // 当鼠标移动时执行下面
-            var x = aaa.clientX;
-            var y = aaa.clientY;
-            if (!using) { return; }
-            if (eraserEnabled) {
-                context.clearRect(x - 5, y - 5, 10, 10);
-            } else {
-                var newPoint = { "x": x, "y": y };    // 声明一个叫新点的hash
-                drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);    // 从上一点到新点画线
-                lastPoint = newPoint;   // 让将新点赋值给上一点
-            }
-        };
-
-        canvas.onmouseup = function (aaa) {    // 当鼠标松开时using为假
-            using = false;
+          }
         }
-    }
-}
+      });
+      this.view.$el.find("#clear").on("click", (e) => {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      });
+      this.view.$el.find("#download").on("click", (e) => {
+        // var url = this.canvas.toDataURL("image/png")
+        // var $a = $('<a></a>').attr({
+        //     href: url,
+        //     download: 'MyPainting',
+        //     target: '_blank'
+        // })
+        // $a.appendTo('body')
+        // console.log($a.click())
+        // $a.click()
+        var url = this.canvas.toDataURL("image/png");
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = url;
+        a.download = "MyPainting";
+        a.target = "_blank";
+        a.click();
+      });
+      this.view.$el.find('canvas').on('touchstart', (e)=>{
+        // 将状态改为开始
+        this.status = 'begin';
+        // 设备改为电脑
+        this.device = 'computer';
+        let x = e.touches[0].clientX;
+        let y = e.touches[0].clientY;
+        this.using = true;
+        if (this.eraserEnabled === "eraser") {
+          // 清除鼠标指针10单位的矩形区域
+          this.context.clearRect(x - 5, y - 5, 10, 10); 
+        } else {
+          // 将触摸点的xy赋予上一点的xy里面
+          this.lastPoint["x"] = x;
+          this.lastPoint["y"] = y;
+        }
+      })
+      this.view.$el.find('canvas').on('touchmove', (e)=>{
+        let x = e.touches[0].clientX;
+        let y = e.touches[0].clientY;
+        if (!this.using) {
+          return;
+        }
+        if (this.eraserEnabled === "eraser") {
+          this.context.clearRect(x - 5, y - 5, 10, 10);
+        } else {
+            this.newPoint["x"] = x;
+            this.newPoint["y"] = y;
+            this.drawLine(
+              this.lastPoint.x,
+              this.lastPoint.y,
+              this.newPoint.x,
+              this.newPoint.y
+            );
+            // 让将新点赋值给上一点
+            Object.assign(this.lastPoint, this.newPoint);
+        }
+      })
+      this.view.$el.find('canvas').on('touchend', (e)=>{
+        this.using = false;
+        this.begin = false;
+      })
+    },
+    // 让画板宽高等于窗口宽高
+    setCanvasSize() {
+      console.log(this.canvas.width);
+      var pageWidth = $(window).width();
+      var pageHeight = $(window).height();
+      this.canvas.width = pageWidth;
+      this.canvas.height = pageHeight;
+      console.log(this.canvas.width);
+    },
+    getPiont(){
+        if(){
 
-
-function drawLine(x1, y1, x2, y2) { // 画线功能
-    context.beginPath();
-    context.moveTo(x1, y1);
-    context.lineWidth = lineWidth;
-    context.lineTo(x2, y2);
-    context.stroke();
-    context.closePath();
+        }
+    },
+    drawLine(x1, y1, x2, y2) {
+      // 画线功能
+      this.context.lineJoin = "round";
+      this.context.lineWidth = this.lineWidth;
+      if (!this.begin) {
+        this.context.beginPath();
+        this.begin = true;
+      }
+      this.context.moveTo(x1, y1);
+      this.context.lineTo(x2, y2);
+      this.context.stroke();
+      this.context.closePath();
+    },
+  };
+  controller.init(view, model);
 }
