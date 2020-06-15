@@ -22,12 +22,10 @@
     },
   };
   let controller = {
-
     context: undefined,
     canvas: undefined,
     lineWidth: 1,
     begin: false,
-    using: false,
     lastPoint: { x: undefined, y: undefined },
     newPoint: { x: undefined, y: undefined },
     penOrEraser: pen,
@@ -45,7 +43,6 @@
       //   this.canvas = this.view.$el.find("#canvas");
       //   this.context = this.canvas[0].getContext('2d');
       this.setCanvasSize();
-      // this.listenToUser(this.canvas);
       this.bindEvents();
     },
     bindEvents() {
@@ -54,56 +51,31 @@
       });
       this.view.$el.find(".penAndEraser").on("click", "svg", (e) => {
         this.penOrEraser = e.currentTarget.id;
+        console.log(this.penOrEraser)
+        this.view.activeItem(e.currentTarget)
       });
       this.view.$el.find("canvas").on("mousedown", (e) => {
         // 将状态改为开始
         this.status = 'begin';
         // 设备改为电脑
         this.device = 'computer';
-        let x = e.clientX;
-        let y = e.clientY;
-        this.using = true;
-        // 如果eraserEnabled为eraser，即橡皮擦按钮被点击过，则执行以下循环
-        if (this.eraserEnabled === "eraser") {
-          // 清除鼠标指针10单位的矩形区域
-          this.context.clearRect(x - 5, y - 5, 10, 10);
-        } else {
-          // 将鼠标指针的xy赋予上一点的xy里面
-          this.lastPoint["x"] = x;
-          this.lastPoint["y"] = y;
-        }
+        this.listenToUser(e)
       });
       this.view.$el.find("canvas").on("mousemove", (e) => {
         // 将状态改为过程
-        this.status = "process"
-        let x = e.clientX;
-        let y = e.clientY;
-        if (!this.using) {
-          return;
+        if(this.status === 'begin'){
+          this.status = "process"
         }
-        if (this.eraserEnabled === "eraser") {
-          this.context.clearRect(x - 5, y - 5, 10, 10);
-        } else {
-          // 从上一点到新点画线
-          this.newPoint["x"] = x;
-          this.newPoint["y"] = y;
-          this.drawLine(
-            this.lastPoint.x,
-            this.lastPoint.y,
-            this.newPoint.x,
-            this.newPoint.y
-          );
-          // 让将新点赋值给上一点
-          Object.assign(this.lastPoint, this.newPoint);
+        if(this.status === 'process'){
+          this.listenToUser(e)
         }
       });
       this.view.$el.find("canvas").on("mouseup", (e) => {
+        this.status = 'stop';
+        this.listenToUser(e)
         // 当鼠标松开时using为假
-        this.using = false;
-        this.begin = false;
       });
       this.view.$el.find("ol").on("click", "li", (e) => {
-        console.log(e.currentTarget);
         this.view.activeItem(e.currentTarget);
         let className = e.currentTarget.parentElement.getAttribute("class");
         if (className === "colors") {
@@ -143,28 +115,51 @@
         // 将状态改为开始
         this.status = 'begin';
         // 设备改为电脑
-        this.device = 'computer';
-        let x = e.touches[0].clientX;
-        let y = e.touches[0].clientY;
-        this.using = true;
-        if (this.eraserEnabled === "eraser") {
-          // 清除鼠标指针10单位的矩形区域
-          this.context.clearRect(x - 5, y - 5, 10, 10); 
-        } else {
-          // 将触摸点的xy赋予上一点的xy里面
-          this.lastPoint["x"] = x;
-          this.lastPoint["y"] = y;
-        }
+        this.device = 'phone';
+        this.listenToUser(e)
       })
       this.view.$el.find('canvas').on('touchmove', (e)=>{
-        let x = e.touches[0].clientX;
-        let y = e.touches[0].clientY;
-        if (!this.using) {
-          return;
+        this.status = "process"
+        this.listenToUser(e)
+      })
+      this.view.$el.find('canvas').on('touchend', (e)=>{
+        this.status = 'stop';
+      })
+    },
+    // 让画板宽高等于窗口宽高
+    setCanvasSize() {
+      var pageWidth = $(window).width();
+      var pageHeight = $(window).height();
+      this.canvas.width = pageWidth;
+      this.canvas.height = pageHeight;
+    },
+    listenToUser(e){
+        // 判断是否是stop状态，即鼠标抬起后的状态
+        if(this.status === 'stop'){
+          this.begin = false;
+          this.status = undefined
+          return
         }
-        if (this.eraserEnabled === "eraser") {
-          this.context.clearRect(x - 5, y - 5, 10, 10);
+        let x 
+        let y
+        // 判断设备及状态，只有是开水或中间状态时才获取坐标，且电脑和手机获取坐标的方式不同
+        if(this.device === 'computer' && (this.status === 'begin' || this.status === 'process')){
+          x = e.clientX;
+          y = e.clientY;
+        }else if(this.device === 'phone' && (this.status === 'begin' || this.status === 'process')){
+          x = e.touches[0].clientX;
+          y = e.touches[0].clientY;
+        }
+        // 判断橡皮擦是否激活，如果激活清除鼠标指针10单位的矩形区域
+        if (this.penOrEraser === "eraser") {
+          this.context.clearRect(x - 5, y - 5, 10, 10); 
         } else {
+          // 判断是开水状态还是中间状态，如果是开始状态，将鼠标的坐标赋给lastPoint，如果是中间状态，将坐标赋给newPoint
+          // 然后用lastPoint和newPoint的坐标画线，再将newPoint的坐标赋给lastPoint
+          if(this.status === 'begin'){
+            this.lastPoint["x"] = x;
+            this.lastPoint["y"] = y;
+          }else if(this.status === 'process'){
             this.newPoint["x"] = x;
             this.newPoint["y"] = y;
             this.drawLine(
@@ -173,37 +168,22 @@
               this.newPoint.x,
               this.newPoint.y
             );
-            // 让将新点赋值给上一点
             Object.assign(this.lastPoint, this.newPoint);
-        }
-      })
-      this.view.$el.find('canvas').on('touchend', (e)=>{
-        this.using = false;
-        this.begin = false;
-      })
-    },
-    // 让画板宽高等于窗口宽高
-    setCanvasSize() {
-      console.log(this.canvas.width);
-      var pageWidth = $(window).width();
-      var pageHeight = $(window).height();
-      this.canvas.width = pageWidth;
-      this.canvas.height = pageHeight;
-      console.log(this.canvas.width);
-    },
-    getPiont(){
-        if(){
-
+          }
         }
     },
     drawLine(x1, y1, x2, y2) {
       // 画线功能
       this.context.lineJoin = "round";
-      this.context.lineWidth = this.lineWidth;
+      // 为了解决画出的线都是一节一节的问题，使用了lineJoin属性，可以设置两条线相交位置的样式，我使用的是round圆头
+      // 但是因为执行每次执行画线都要重新开始，此属性无法生效，所以需要进行如下操作
+      // 设置一个begin变量，初始值是false，进入画线函数后进行判断，如果是false，就调用beginPath，并将begin给为true
+      // 后面在进入画线函数就直接画线，不需要beginPath了，在鼠标抬起时再将begin改为false。
       if (!this.begin) {
         this.context.beginPath();
         this.begin = true;
       }
+      this.context.lineWidth = this.lineWidth;
       this.context.moveTo(x1, y1);
       this.context.lineTo(x2, y2);
       this.context.stroke();

@@ -36,7 +36,7 @@ body{
     margin: 0 10px;
     /* 给笔和橡皮擦直接一个空隙 */
 }
-.actions > svg.active{
+.actions svg.active{
     /* 当svg处于active状态时变成下面样式 */
     color: red;
     transform: scale(1.2);
